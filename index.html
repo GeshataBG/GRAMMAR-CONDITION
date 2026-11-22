@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GRAMMAR CONDITION — Interactive Language Grammar Game</title>
+  <link rel="preconnect" href="https://googleapis.com" />
+  <link rel="preconnect" href="https://gstatic.com" crossorigin />
+  <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <header class="top-nav">
+    <div class="logo" id="nav-logo">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">GRAMMAR <strong>CONDITION</strong></span>
+    </div>
+    <div class="user-stats-pill" id="home-user-stats">
+      Quizzes Played: 0 | Best Accuracy: 0%
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- 1. HOMEPAGE / START SCREEN -->
+    <section id="home-screen" class="screen active">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <span class="badge">60 LANGUAGES • CEFR A1–C2</span>
+          <h1 class="main-title">GRAMMAR <span>CONDITION</span></h1>
+          <h2 class="welcome-msg">Welcome to Grammar Condition!</h2>
+          <p class="hero-desc">
+            Challenge your grammar skills, master new languages, and become a grammar expert!
+          </p>
+
+          <div class="how-it-works">
+            <h3>How It Works</h3>
+            <div class="steps-grid">
+              <div class="step-card">
+                <span class="step-num">01</span>
+                <h4>Pick Languages</h4>
+                <p>Select the target grammar language and your preferred instruction language.</p>
+              </div>
+              <div class="step-card">
+                <span class="step-num">02</span>
+                <h4>Choose Level</h4>
+                <p>Progress from A1 Beginner up to C2 Proficiency challenges.</p>
+              </div>
+              <div class="step-card">
+                <span class="step-num">03</span>
+                <h4>Master Rules</h4>
+                <p>Get instant visual feedback, rule explanations, and mistake reviews.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-action">
+          <button type="button" id="btn-play-now" class="play-square-btn">
+            <span class="play-icon">▶</span>
+            <span class="play-label">PLAY NOW</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. LANGUAGE & DIFFICULTY SETUP SCREEN -->
+    <section id="setup-screen" class="screen" style="display: none;">
+      <div class="panel-card setup-card">
+        <h2 class="section-title">Configure Your Challenge</h2>
+        <p class="section-subtitle">Select which language's grammar you want to practice and your difficulty tier.</p>
+
+        <div class="lang-selectors-grid">
+          <div class="form-group">
+            <label for="question-lang-input">Question Language (Target Grammar)</label>
+            <div class="searchable-select">
+              <input
+                type="text"
+                id="question-lang-input"
+                placeholder="Search 60 languages..."
+                autocomplete="off"
+              />
+              <div id="question-lang-list" class="dropdown-list"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="answer-lang-input">Answer Language (Instructions & UI)</label>
+            <div class="searchable-select">
+              <input
+                type="text"
+                id="answer-lang-input"
+                placeholder="Search 60 languages..."
+                autocomplete="off"
+              />
+              <div id="answer-lang-list" class="dropdown-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="difficulty-section">
+          <label>Select Grammar Difficulty (CEFR)</label>
+          <div class="difficulty-grid">
+            <button type="button" class="difficulty-btn selected" data-level="A1">
+              <span class="diff-code">A1</span>
+              <span class="diff-name">Beginner</span>
+              <span class="diff-req">Min 20 Qs</span>
+            </button>
+            <button type="button" class="difficulty-btn" data-level="A2">
+              <span class="diff-code">A2</span>
+              <span class="diff-name">Elementary</span>
+              <span class="diff-req">Min 25 Qs</span>
+            </button>
+            <button type="button" class="difficulty-btn" data-level="B1">
+              <span class="diff-code">B1</span>
+              <span class="diff-name">Intermediate</span>
+              <span class="diff-req">Min 30 Qs</span>
+            </button>
+            <button type="button" class="difficulty-btn" data-level="B2">
+              <span class="diff-code">B2</span>
+              <span class="diff-name">Upper Int.</span>
+              <span class="diff-req">Min 35 Qs</span>
+            </button>
+            <button type="button" class="difficulty-btn" data-level="C1">
+              <span class="diff-code">C1</span>
+              <span class="diff-name">Advanced</span>
+              <span class="diff-req">Min 40 Qs</span>
+            </button>
+            <button type="button" class="difficulty-btn" data-level="C2">
+              <span class="diff-code">C2</span>
+              <span class="diff-name">Proficiency</span>
+              <span class="diff-req">Min 50 Qs</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="db-status-message" class="status-warning" style="display: none;"></div>
+
+        <div class="setup-actions">
+          <button type="button" id="btn-start-quiz" class="primary-btn">START QUIZ</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. ACTIVE GAMEPLAY SCREEN -->
+    <section id="game-screen" class="screen" style="display: none;">
+      <div class="panel-card game-card">
+        <div class="progress-dashboard">
+          <div class="progress-meta">
+            <span id="question-counter">Question 1 / 20</span>
+            <span id="progress-percentage">Progress: 0%</span>
+          </div>
+          <div class="progress-track">
+            <div id="progress-bar-fill" class="progress-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <div class="question-stage">
+          <h2 id="question-text" class="question-prompt">Loading question...</h2>
+        </div>
+
+        <div id="options-container" class="options-grid"></div>
+
+        <div id="feedback-container" class="feedback-box" style="display: none;"></div>
+
+        <div class="game-footer">
+          <button type="button" id="btn-next-question" class="primary-btn" style="display: none;">
+            NEXT QUESTION
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. FINAL RESULTS SCREEN -->
+    <section id="results-screen" class="screen" style="display: none;">
+      <div class="panel-card results-card">
+        <h2 class="section-title">Quiz Complete!</h2>
+
+        <div class="results-overview">
+          <div class="chart-wrapper">
+            <div id="accuracy-circle" class="circular-chart">
+              <div class="circular-inner">
+                <span id="accuracy-circle-text">0%</span>
+                <small>Accuracy</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-summary-grid">
+            <div class="stat-box">
+              <span class="stat-label">Final Score</span>
+              <strong id="res-score" class="stat-val">0 / 0</strong>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Correct</span>
+              <strong id="res-correct" class="stat-val text-green">0</strong>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Incorrect</span>
+              <strong id="res-incorrect" class="stat-val text-red">0</strong>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Accuracy</span>
+              <strong id="res-accuracy" class="stat-val">0%</strong>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Total Questions</span>
+              <strong id="res-total" class="stat-val">0</strong>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Difficulty</span>
+              <strong id="res-level" class="stat-val">A1</strong>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Grammar Language</span>
+              <strong id="res-q-lang" class="stat-val">English</strong>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Interface Language</span>
+              <strong id="res-a-lang" class="stat-val">English</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-section">
+          <h3>QUESTION REVIEW</h3>
+          <div id="question-review-list" class="review-list"></div>
+        </div>
+
+        <div class="results-actions">
+          <button type="button" id="btn-play-again" class="primary-btn">PLAY AGAIN</button>
+          <button type="button" id="btn-back-home" class="secondary-btn">BACK TO HOME</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
